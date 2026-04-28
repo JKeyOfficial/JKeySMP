@@ -115,7 +115,7 @@ export default function Navbar() {
             setTimeout(() => setCopied(false), 2000);
           }}
           className={`inline-block px-6 py-2.5 rounded-md text-white font-medium hover:scale-105 cursor-pointer transition-all duration-300 ${
-            copied ? "bg-[#1da1f2]" : "bg-primary hover:bg-opacity-80"
+            copied ? "bg-[#1da1f2]" : "bg-primary hover:bg-[#1da1f2]"
           }`}
         >
           {copied ? "IP copied" : "IP: jkeysmp.net"}

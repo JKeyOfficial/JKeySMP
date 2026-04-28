@@ -34,7 +34,9 @@ export default function ServerStatus() {
     <div className="flex flex-col items-center space-y-6">
       <div 
         onClick={copyIp}
-        className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-primary border border-transparent rounded-full cursor-pointer hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)] hover:shadow-[0_0_60px_-10px_rgba(59,130,246,0.8)] hover:-translate-y-1"
+        className={`group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 border border-transparent rounded-full cursor-pointer hover:scale-105 active:scale-95 ${
+          copied ? "bg-[#1da1f2]" : "bg-primary hover:bg-[#1da1f2]"
+        }`}
       >
         <span className="flex items-center space-x-2 text-lg">
           <span>{serverIp}</span>
