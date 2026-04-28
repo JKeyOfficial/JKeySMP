@@ -105,7 +105,7 @@ export default function JoinModal({ isOpen, onClose }: JoinModalProps) {
                       <p className="text-foreground font-medium mb-2">Join using BedrockTogether</p>
                       <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed">
                         Consoles (Xbox, PlayStation, Switch) cannot normally add custom servers.
-                        Download the <span className="text-primary font-bold">BedrockTogether</span> app on your phone, enter our IP and Port, and the server will appear in your "Friends" tab on your console!
+                        Download the <a href="https://bedrocktogether.net/" target="_blank" rel="noopener noreferrer" className="text-primary font-bold hover:underline decoration-2 underline-offset-2">BedrockTogether</a> app on your phone, enter our IP and Port, and the server will appear in your "Friends" tab on your console!
                       </p>
                     </div>
                   </div>
