@@ -10,14 +10,20 @@ export async function GET(req: Request) {
   }
 
   try {
+    const lcName = username.toLowerCase();
+    
+    // TEST: See if the server returns ANY text for a basic command
+    const testList = await executeRconCommand("list");
+    console.log(`[RCON TEST] 'list' response: ${testList}`);
+
     // Try 'parent list' instead of 'info', it's often more reliable for RCON
-    const response = await executeRconCommand(`lp user ${username} parent list`);
+    const response = await executeRconCommand(`lp user ${lcName} parent list`);
     
     if (typeof response !== "string" || !response || response === "1") {
       // If we still get '1' or nothing, we try a permission check as a last resort
-      const hasPro = await executeRconCommand(`lp user ${username} permission check group.pro`) || "";
-      const hasElite = await executeRconCommand(`lp user ${username} permission check group.elite`) || "";
-      const hasUltra = await executeRconCommand(`lp user ${username} permission check group.ultra`) || "";
+      const hasPro = await executeRconCommand(`lp user ${lcName} permission check group.pro`) || "";
+      const hasElite = await executeRconCommand(`lp user ${lcName} permission check group.elite`) || "";
+      const hasUltra = await executeRconCommand(`lp user ${lcName} permission check group.ultra`) || "";
       
       const groups = ["default"];
       if (String(hasPro).toLowerCase().includes("true")) groups.push("pro");
