@@ -11,15 +11,19 @@ export async function executeRconCommand(command: string) {
   }
 
   try {
+    console.log(`[RCON] Attempting to connect to ${host}:${port}...`);
     const rcon = await Rcon.connect({
       host,
       port,
       password,
     });
+    
+    console.log(`[RCON] Connected! Waiting 100ms...`);
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     console.log(`[RCON] Executing command: ${command}`);
     const response = await rcon.send(command);
-    console.log(`[RCON] Response: ${response}`);
+    console.log(`[RCON] Raw Response: "${response}"`);
     
     await rcon.end();
     return response || "";
