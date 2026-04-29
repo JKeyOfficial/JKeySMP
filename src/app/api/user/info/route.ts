@@ -13,7 +13,7 @@ export async function GET(req: Request) {
     // Command to get player groups
     const response = await executeRconCommand(`lp user ${username} parent info`);
     
-    if (!response) {
+    if (response === null || typeof response !== "string") {
       return NextResponse.json({ groups: ["default"] });
     }
 

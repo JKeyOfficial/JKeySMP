@@ -21,10 +21,10 @@ export async function executeRconCommand(command: string) {
     console.log(`[RCON] Response: ${response}`);
     
     await client.close();
-    return true;
+    return response || "";
   } catch (error) {
     console.error(`[RCON] Failed to execute command:`, error);
-    client.close();
-    return false;
+    try { client.close(); } catch (e) {}
+    return null;
   }
 }

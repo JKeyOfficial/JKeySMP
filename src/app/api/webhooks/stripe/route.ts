@@ -46,8 +46,8 @@ export async function POST(req: Request) {
         let allSuccessful = true;
         for (const cmdTemplate of item.commands) {
           const command = cmdTemplate.replace("{player}", username);
-          const success = await executeRconCommand(command);
-          if (!success) allSuccessful = false;
+          const response = await executeRconCommand(command);
+          if (response === null) allSuccessful = false;
         }
         
         if (allSuccessful) {
