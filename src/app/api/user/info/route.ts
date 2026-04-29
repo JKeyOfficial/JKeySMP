@@ -15,25 +15,25 @@ export async function GET(req: Request) {
     
     if (typeof response !== "string" || !response || response === "1") {
       // If we still get '1' or nothing, we try a permission check as a last resort
-      const hasPro = await executeRconCommand(`lp user ${username} permission check group.pro`);
-      const hasElite = await executeRconCommand(`lp user ${username} permission check group.elite`);
-      const hasUltra = await executeRconCommand(`lp user ${username} permission check group.ultra`);
+      const hasPro = await executeRconCommand(`lp user ${username} permission check group.pro`) || "";
+      const hasElite = await executeRconCommand(`lp user ${username} permission check group.elite`) || "";
+      const hasUltra = await executeRconCommand(`lp user ${username} permission check group.ultra`) || "";
       
       const groups = ["default"];
-      if (hasPro?.toLowerCase().includes("true")) groups.push("pro");
-      if (hasElite?.toLowerCase().includes("true")) groups.push("elite");
-      if (hasUltra?.toLowerCase().includes("true")) groups.push("ultra");
+      if (String(hasPro).toLowerCase().includes("true")) groups.push("pro");
+      if (String(hasElite).toLowerCase().includes("true")) groups.push("elite");
+      if (String(hasUltra).toLowerCase().includes("true")) groups.push("ultra");
       
       return NextResponse.json({ groups });
     }
 
     // Parse the list response. LuckPerms list usually looks like: "- pro", "- default", etc.
     const groups = ["default"];
-    const lines = response.split("\n");
+    const text = String(response).toLowerCase();
     
-    if (response.toLowerCase().includes("pro")) groups.push("pro");
-    if (response.toLowerCase().includes("elite")) groups.push("elite");
-    if (response.toLowerCase().includes("ultra")) groups.push("ultra");
+    if (text.includes("pro")) groups.push("pro");
+    if (text.includes("elite")) groups.push("elite");
+    if (text.includes("ultra")) groups.push("ultra");
 
     return NextResponse.json({ groups: Array.from(new Set(groups)) });
   } catch (error) {
