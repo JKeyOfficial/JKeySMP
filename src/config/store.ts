@@ -10,50 +10,50 @@ export interface StoreItem {
 
 export const storeItems: StoreItem[] = [
   {
-    id: "rank_vip",
-    name: "VIP Rank",
+    id: "rank_pro",
+    name: "Pro Rank",
     description: "The perfect starting point for dedicated players.",
     price: 499, // $4.99
     features: [
-      "[VIP] Chat Prefix",
+      "[PRO] Chat Prefix",
       "Set up to 3 homes",
       "Access to /workbench",
       "Priority server access",
       "Exclusive Discord Role"
     ],
     color: "from-zinc-300 to-zinc-500", // Silver
-    commands: ["lp user {player} parent add vip"]
+    commands: ["lp user {player} parent add pro"]
   },
   {
-    id: "rank_mvp",
-    name: "MVP Rank",
+    id: "rank_elite",
+    name: "Elite Rank",
     description: "Stand out from the crowd with premium perks.",
     price: 1499, // $14.99
     features: [
-      "All VIP Features",
-      "[MVP] Chat Prefix",
+      "All Pro Features",
+      "[ELITE] Chat Prefix",
       "Set up to 10 homes",
       "Access to /enderchest",
       "Keep inventory on death",
       "Color chat access"
     ],
     color: "from-amber-300 to-amber-500", // Gold
-    commands: ["lp user {player} parent add mvp"]
+    commands: ["lp user {player} parent add elite"]
   },
   {
-    id: "rank_mvp_plus",
-    name: "MVP+ Rank",
+    id: "rank_ultra",
+    name: "Ultra Rank",
     description: "The ultimate status for our biggest supporters.",
     price: 2499, // $24.99
     features: [
-      "All MVP Features",
-      "[MVP+] Chat Prefix",
+      "All Elite Features",
+      "[ULTRA] Chat Prefix",
       "Unlimited homes",
       "Access to /fly in claims",
       "Join full server",
       "Custom nicknames"
     ],
     color: "from-cyan-400 to-blue-500", // Blue Diamond
-    commands: ["lp user {player} parent add mvpplus"]
+    commands: ["lp user {player} parent add ultra"]
   }
 ];
