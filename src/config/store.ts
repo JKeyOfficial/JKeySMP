@@ -20,13 +20,12 @@ export const storeItems: StoreItem[] = [
     id: "rank_pro",
     name: "Pro Rank",
     description: "The perfect starting point for dedicated players.",
-    price: 499, // $4.99
+    price: 299, // $2.99
     features: [
       "[PRO] Chat Prefix",
-      "Set up to 3 homes",
-      "Access to /workbench",
-      "Priority server access",
-      "Exclusive Discord Role"
+      "Set up to 5 homes",
+      "Exclusive Discord Role",
+      "Leaderboard glow"
     ],
     color: "from-zinc-300 to-zinc-500", // Silver
     commands: ["lpv user \"{player}\" parent add pro"]
@@ -35,14 +34,13 @@ export const storeItems: StoreItem[] = [
     id: "rank_elite",
     name: "Elite Rank",
     description: "Stand out from the crowd with premium perks.",
-    price: 1499, // $14.99
+    price: 499, // $4.99
     features: [
-      "All Pro Features",
       "[ELITE] Chat Prefix",
-      "Set up to 10 homes",
-      "Access to /enderchest",
-      "Keep inventory on death",
-      "Color chat access"
+      "Set up to 7 homes",
+      "Exclusive Discord Role",
+      "Leaderboard glow",
+
     ],
     color: "from-amber-300 to-amber-500", // Gold
     commands: ["lpv user \"{player}\" parent add elite"]
@@ -51,14 +49,14 @@ export const storeItems: StoreItem[] = [
     id: "rank_ultra",
     name: "Ultra Rank",
     description: "The ultimate status for our biggest supporters.",
-    price: 2499, // $24.99
+    price: 799, // $7.99
     features: [
-      "All Elite Features",
       "[ULTRA] Chat Prefix",
-      "Unlimited homes",
-      "Access to /fly in claims",
-      "Join full server",
-      "Custom nicknames"
+      "Set up to 12 homes",
+      "Exclusive Discord Role",
+      "Leaderboard glow",
+      "Custom nicknames",
+      "HabiTick lifetime premium"
     ],
     color: "from-cyan-400 to-blue-500", // Blue Diamond
     commands: ["lpv user \"{player}\" parent add ultra"]

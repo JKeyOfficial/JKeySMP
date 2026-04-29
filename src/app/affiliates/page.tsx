@@ -21,7 +21,7 @@ export default function AffiliatesPage() {
       link: "https://habitick.pro",
       icon: <CheckCircle2 className="w-12 h-12 text-primary" />,
       tag: "Productivity Partner",
-      gradient: "from-green-500/10 to-primary/10"
+      gradient: "from-blue-500/10 to-primary/10"
     }
   ];
 
