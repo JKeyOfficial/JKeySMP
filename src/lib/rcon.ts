@@ -1,6 +1,8 @@
 import { Rcon } from "rcon-client";
 
 export async function executeRconCommand(command: string) {
+  // Security check: Only allow alphanumeric, underscores, dots (bedrock), and spaces in the full command
+  // But more importantly, we should sanitize the input BEFORE it gets here.
   const host = process.env.RCON_HOST;
   const port = parseInt(process.env.RCON_PORT || "25575", 10);
   const password = process.env.RCON_PASSWORD;

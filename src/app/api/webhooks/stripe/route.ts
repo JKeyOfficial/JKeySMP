@@ -37,21 +37,24 @@ export async function POST(req: Request) {
     const itemId = session.metadata?.item_id;
 
     if (username && itemId) {
+      // SECURITY: Sanitize username for RCON safety
+      // Allow alphanumeric, underscores, dots, and SPACES
+      const safeName = username.replace(/[^a-zA-Z0-9_. ]/g, "");
       const item = storeItems.find((i) => i.id === itemId);
       
-      if (item) {
-        console.log(`[Stripe Webhook] Processing purchase: ${item.name} for ${username}`);
+      if (item && safeName) {
+        console.log(`[Stripe Webhook] Processing purchase: ${item.name} for ${safeName}`);
         
         // Execute all RCON commands
         let allSuccessful = true;
         for (const cmdTemplate of item.commands) {
-          const command = cmdTemplate.replace("{player}", username);
+          const command = cmdTemplate.replace("{player}", safeName);
           const response = await executeRconCommand(command);
           if (response === null) allSuccessful = false;
         }
         
         if (allSuccessful) {
-          console.log(`Successfully granted ${item.name} to ${username}`);
+          console.log(`Successfully granted ${item.name} to ${safeName}`);
           
           // Send Discord Notification if webhook is configured
           const discordWebhook = process.env.DISCORD_WEBHOOK_URL;

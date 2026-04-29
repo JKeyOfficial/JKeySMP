@@ -156,23 +156,39 @@ export default function CheckoutModal({ item, onClose, initialPrice }: CheckoutM
             <label htmlFor="username" className="block text-sm font-bold text-white/60 uppercase tracking-wider">
               Minecraft Username
             </label>
-            <div className="relative">
+            <div className="relative group/input">
               <input
                 type="text"
                 id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder={platform === "bedrock" ? "Username (without .)" : "Username"}
-                className="w-full h-14 px-5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium"
+                className="w-full h-16 px-5 pr-16 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-lg"
                 required
               />
+              
+              {/* Dynamic Avatar Preview */}
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-3">
+                {isCheckingDiscount && (
+                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                )}
+                <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-white/10 bg-white/5 shadow-inner">
+                  <img
+                    src={username.trim() 
+                      ? `https://minotar.net/helm/${platform === "bedrock" && !username.startsWith('.') ? '.' + username : username}/40.png`
+                      : "https://minotar.net/helm/Steve/40.png"
+                    }
+                    alt="Preview"
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "https://minotar.net/helm/Steve/40.png";
+                    }}
+                  />
+                </div>
+              </div>
+
               {platform === "bedrock" && (
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold text-lg pointer-events-none opacity-50">.</span>
-              )}
-              {isCheckingDiscount && (
-                <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                </div>
               )}
             </div>
             {error && <p className="text-sm text-red-400 font-medium">{error}</p>}

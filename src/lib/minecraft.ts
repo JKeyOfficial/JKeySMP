@@ -2,8 +2,14 @@ import { executeRconCommand } from "./rcon";
 import { rankPriority } from "@/config/store";
 
 export async function getUserGroups(username: string): Promise<string[]> {
+  // SECURITY: Prevent RCON Injection
+  // Allow alphanumeric, underscores, dots, and SPACES (for Bedrock)
+  const safeName = username.replace(/[^a-zA-Z0-9_. ]/g, "");
+  
+  if (!safeName) return ["default"];
+
   try {
-    const lcName = username.toLowerCase();
+    const lcName = safeName.toLowerCase();
     
     // Velocity commands often need /lpv
     const response = await executeRconCommand(`lpv user ${lcName} parent info`);
