@@ -4,9 +4,21 @@ import { useState } from "react";
 import { storeItems, StoreItem } from "@/config/store";
 import { Check } from "lucide-react";
 import CheckoutModal from "@/components/CheckoutModal";
+import { useUser } from "@/context/UserContext";
 
 export default function StorePage() {
   const [selectedItem, setSelectedItem] = useState<StoreItem | null>(null);
+  const { username, groups } = useUser();
+
+  // Define rank hierarchy
+  const rankPriority: Record<string, number> = {
+    "default": 0,
+    "pro": 1,
+    "elite": 2,
+    "ultra": 3
+  };
+
+  const currentRankLevel = Math.max(...groups.map(g => rankPriority[g] || 0));
 
   return (
     <main className="flex-1 flex flex-col pt-32 pb-16">
@@ -20,40 +32,62 @@ export default function StorePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {storeItems.map((item) => (
-            <div 
-              key={item.id}
-              className="flex flex-col bg-card border border-border rounded-xl p-8 relative overflow-hidden group hover:-translate-y-2 hover:border-primary hover:shadow-[0_10px_20px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_10px_20px_rgba(0,0,0,0.4)] transition-all duration-300"
-            >
-              <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${item.color}`}></div>
-              
-              <div className="mb-8 mt-2">
-                <h3 className="text-2xl font-bold font-heading text-foreground mb-2">{item.name}</h3>
-                <p className="text-zinc-500 dark:text-zinc-400 min-h-[48px]">{item.description}</p>
-              </div>
+          {storeItems.map((item) => {
+            const itemRankName = item.id.replace("rank_", "");
+            const itemLevel = rankPriority[itemRankName] || 0;
+            const isOwned = groups.includes(itemRankName);
+            const isDowngrade = currentRankLevel > itemLevel;
 
-              <div className="mb-8">
-                <span className="text-4xl font-black text-foreground">${(item.price / 100).toFixed(2)}</span>
-                <span className="text-zinc-500 dark:text-zinc-400"> / lifetime</span>
-              </div>
-
-              <ul className="space-y-4 mb-8 flex-1">
-                {item.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start">
-                    <Check className="w-5 h-5 text-primary mr-3 shrink-0" />
-                    <span className="text-zinc-500 dark:text-zinc-300">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                onClick={() => setSelectedItem(item)}
-                className="w-full py-3 rounded-lg font-medium text-white bg-primary hover:bg-primary/90 hover:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(228,1,46,0.3)]"
+            return (
+              <div 
+                key={item.id}
+                className={`flex flex-col bg-card border border-border rounded-xl p-8 relative overflow-hidden group transition-all duration-300 ${
+                  isOwned || isDowngrade ? "opacity-75" : "hover:-translate-y-2 hover:border-primary hover:shadow-[0_10px_20px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_10px_20px_rgba(0,0,0,0.4)]"
+                }`}
               >
-                Purchase {item.name}
-              </button>
-            </div>
-          ))}
+                <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${item.color}`}></div>
+                
+                {isOwned && (
+                  <div className="absolute top-4 right-4 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
+                    Owned
+                  </div>
+                )}
+
+                <div className="mb-8 mt-2">
+                  <h3 className="text-2xl font-bold font-heading text-foreground mb-2">{item.name}</h3>
+                  <p className="text-zinc-500 dark:text-zinc-400 min-h-[48px]">{item.description}</p>
+                </div>
+
+                <div className="mb-8">
+                  <span className="text-4xl font-black text-foreground">${(item.price / 100).toFixed(2)}</span>
+                  <span className="text-zinc-500 dark:text-zinc-400"> / lifetime</span>
+                </div>
+
+                <ul className="space-y-4 mb-8 flex-1">
+                  {item.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start">
+                      <Check className="w-5 h-5 text-primary mr-3 shrink-0" />
+                      <span className="text-zinc-500 dark:text-zinc-300">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <button
+                  onClick={() => !isOwned && !isDowngrade && setSelectedItem(item)}
+                  disabled={isOwned || isDowngrade}
+                  className={`w-full py-3 rounded-lg font-bold transition-all duration-300 ${
+                    isOwned 
+                      ? "bg-green-500/20 text-green-500 border border-green-500/50 cursor-default" 
+                      : isDowngrade
+                      ? "bg-muted text-muted-foreground cursor-not-allowed"
+                      : "bg-primary text-white hover:bg-primary/90 hover:scale-105 shadow-[0_0_15px_rgba(228,1,46,0.3)]"
+                  }`}
+                >
+                  {isOwned ? "Already Owned" : isDowngrade ? "Higher Rank Owned" : `Purchase ${item.name}`}
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
 

@@ -10,8 +10,13 @@ interface CheckoutModalProps {
   onClose: () => void;
 }
 
+import { useUser } from "@/context/UserContext";
+import { Monitor, Gamepad2 } from "lucide-react";
+
 export default function CheckoutModal({ item, onClose }: CheckoutModalProps) {
-  const [username, setUsername] = useState("");
+  const { username: loggedInUser } = useUser();
+  const [username, setUsername] = useState(loggedInUser?.startsWith('.') ? loggedInUser.substring(1) : (loggedInUser || ""));
+  const [platform, setPlatform] = useState<"java" | "bedrock">(loggedInUser?.startsWith('.') ? "bedrock" : "java");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -27,13 +32,19 @@ export default function CheckoutModal({ item, onClose }: CheckoutModalProps) {
     setLoading(true);
     setError("");
 
+    // Add prefix for bedrock
+    let finalName = username.trim();
+    if (platform === "bedrock" && !finalName.startsWith(".")) {
+      finalName = "." + finalName;
+    }
+
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           itemId: item.id,
-          username: username.trim(),
+          username: finalName,
         }),
       });
 
@@ -50,35 +61,68 @@ export default function CheckoutModal({ item, onClose }: CheckoutModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="relative w-full max-w-md p-6 bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl">
+    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      <div className="relative w-full max-w-md p-8 bg-[#121212] border border-white/10 rounded-3xl shadow-2xl animate-in fade-in zoom-in duration-300">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-zinc-400 hover:text-white transition-colors"
+          className="absolute top-6 right-6 text-white/40 hover:text-white transition-colors"
         >
-          <X className="w-5 h-5" />
+          <X className="w-6 h-6" />
         </button>
         
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-1 text-white">Purchase {item.name}</h2>
-          <p className="text-zinc-400">Enter your Minecraft username to receive your rank.</p>
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold mb-2 text-white">Purchase {item.name}</h2>
+          <p className="text-white/40">Choose your platform and enter your username.</p>
         </div>
 
-        <form onSubmit={handleCheckout} className="space-y-4">
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-zinc-300 mb-1">
+        <form onSubmit={handleCheckout} className="space-y-6">
+          {/* Platform Toggle */}
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => setPlatform("java")}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all font-bold text-sm ${
+                platform === "java" 
+                ? "bg-primary border-primary text-white" 
+                : "bg-white/5 border-white/10 text-white/40 hover:bg-white/10"
+              }`}
+            >
+              <Monitor className="w-4 h-4" />
+              JAVA
+            </button>
+            <button
+              type="button"
+              onClick={() => setPlatform("bedrock")}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all font-bold text-sm ${
+                platform === "bedrock" 
+                ? "bg-primary border-primary text-white" 
+                : "bg-white/5 border-white/10 text-white/40 hover:bg-white/10"
+              }`}
+            >
+              <Gamepad2 className="w-4 h-4" />
+              BEDROCK
+            </button>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="username" className="block text-sm font-bold text-white/60 uppercase tracking-wider">
               Minecraft Username
             </label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="e.g. Notch"
-              className="w-full px-4 py-3 bg-zinc-800 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-              required
-            />
-            {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
+            <div className="relative">
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder={platform === "bedrock" ? "Username (without .)" : "Username"}
+                className="w-full h-14 px-5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium"
+                required
+              />
+              {platform === "bedrock" && (
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold text-lg pointer-events-none opacity-50">.</span>
+              )}
+            </div>
+            {error && <p className="text-sm text-red-400 font-medium">{error}</p>}
           </div>
 
           <div className="pt-4 border-t border-white/10">

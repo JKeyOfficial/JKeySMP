@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import SocialSidebar from "@/components/SocialSidebar";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { UserProvider } from "@/context/UserContext";
 
 const roboto = Roboto({
   weight: ["100", "300", "400", "500", "700", "900"],
@@ -36,12 +37,14 @@ export default function RootLayout({
     >
       <body className="min-h-screen bg-background text-foreground antialiased selection:bg-primary/30 flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          <Navbar />
-          <div className="relative flex-1 flex flex-col">
-            <SocialSidebar />
-            {children}
-          </div>
-          <Footer />
+          <UserProvider>
+            <Navbar />
+            <div className="relative flex-1 flex flex-col">
+              <SocialSidebar />
+              {children}
+            </div>
+            <Footer />
+          </UserProvider>
         </ThemeProvider>
       </body>
     </html>
