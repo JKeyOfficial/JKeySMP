@@ -12,18 +12,14 @@ export async function GET(req: Request) {
   try {
     const lcName = username.toLowerCase();
 
-    // ULTIMATE TEST: The 'version' command always returns text
-    const verTest = await executeRconCommand("version");
-    console.log(`[RCON VERSION TEST] response: ${verTest}`);
-
-    // Velocity commands often need /lpv
-    const response = await executeRconCommand(`/lpv user ${lcName} parent info`);
+    // Velocity RCON must NOT have a leading slash
+    const response = await executeRconCommand(`lpv user ${lcName} parent info`);
 
     if (typeof response !== "string" || !response || response === "1") {
-      // If we still get '1' or nothing, we try permission checks with slashes
-      const hasPro = await executeRconCommand(`/lpv user ${lcName} permission check group.pro`) || "";
-      const hasElite = await executeRconCommand(`/lpv user ${lcName} permission check group.elite`) || "";
-      const hasUltra = await executeRconCommand(`/lpv user ${lcName} permission check group.ultra`) || "";
+      // If we still get '1' or nothing, we try permission checks (no slashes)
+      const hasPro = await executeRconCommand(`lpv user ${lcName} permission check group.pro`) || "";
+      const hasElite = await executeRconCommand(`lpv user ${lcName} permission check group.elite`) || "";
+      const hasUltra = await executeRconCommand(`lpv user ${lcName} permission check group.ultra`) || "";
 
       const groups = ["default"];
       if (String(hasPro).toLowerCase().includes("true")) groups.push("pro");
