@@ -22,7 +22,7 @@ export const storeItems: StoreItem[] = [
       "Exclusive Discord Role"
     ],
     color: "from-zinc-300 to-zinc-500", // Silver
-    commands: ["lp user {player} parent add pro"]
+    commands: ["lpv user {player} parent add pro"]
   },
   {
     id: "rank_elite",
@@ -38,7 +38,7 @@ export const storeItems: StoreItem[] = [
       "Color chat access"
     ],
     color: "from-amber-300 to-amber-500", // Gold
-    commands: ["lp user {player} parent add elite"]
+    commands: ["lpv user {player} parent add elite"]
   },
   {
     id: "rank_ultra",
@@ -54,6 +54,6 @@ export const storeItems: StoreItem[] = [
       "Custom nicknames"
     ],
     color: "from-cyan-400 to-blue-500", // Blue Diamond
-    commands: ["lp user {player} parent add ultra"]
+    commands: ["lpv user {player} parent add ultra"]
   }
 ];

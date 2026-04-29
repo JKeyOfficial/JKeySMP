@@ -16,8 +16,8 @@ export async function GET(req: Request) {
     const verTest = await executeRconCommand("version");
     console.log(`[RCON VERSION TEST] response: ${verTest}`);
 
-    // Try the user's preferred 'parent info' command with a leading slash
-    const response = await executeRconCommand(`/lp user ${lcName} parent info`);
+    // Velocity commands often need /lpv
+    const response = await executeRconCommand(`/lpv user ${lcName} parent info`);
 
     if (typeof response !== "string" || !response || response === "1") {
       // If we still get '1' or nothing, we try permission checks with slashes
