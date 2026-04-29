@@ -5,7 +5,7 @@ export interface StoreItem {
   price: number; // In cents
   features: string[];
   color: string;
-  command: string;
+  commands: string[];
 }
 
 export const storeItems: StoreItem[] = [
@@ -22,7 +22,7 @@ export const storeItems: StoreItem[] = [
       "Exclusive Discord Role"
     ],
     color: "from-zinc-300 to-zinc-500", // Silver
-    command: "lp user {player} parent add vip"
+    commands: ["lp user {player} parent add vip"]
   },
   {
     id: "rank_mvp",
@@ -38,7 +38,7 @@ export const storeItems: StoreItem[] = [
       "Color chat access"
     ],
     color: "from-amber-300 to-amber-500", // Gold
-    command: "lp user {player} parent add mvp"
+    commands: ["lp user {player} parent add mvp"]
   },
   {
     id: "rank_mvp_plus",
@@ -54,6 +54,6 @@ export const storeItems: StoreItem[] = [
       "Custom nicknames"
     ],
     color: "from-cyan-400 to-blue-500", // Blue Diamond
-    command: "lp user {player} parent add mvpplus"
+    commands: ["lp user {player} parent add mvpplus"]
   }
 ];

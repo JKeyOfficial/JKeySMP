@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { storeItems } from "@/config/store";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2026-04-22.dahlia",
+  apiVersion: "2024-06-20",
 });
 
 export async function POST(req: Request) {
@@ -37,8 +37,8 @@ export async function POST(req: Request) {
         },
       ],
       mode: "payment",
-      success_url: `${appUrl}/store?success=true`,
-      cancel_url: `${appUrl}/store?canceled=true`,
+      success_url: `${appUrl}?success=true`,
+      cancel_url: `${appUrl}?canceled=true`,
       metadata: {
         minecraft_username: username,
         item_id: item.id,

@@ -4,7 +4,7 @@ import { storeItems } from "@/config/store";
 import { executeRconCommand } from "@/lib/rcon";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2026-04-22.dahlia",
+  apiVersion: "2024-06-20",
 });
 
 export async function POST(req: Request) {
@@ -38,14 +38,48 @@ export async function POST(req: Request) {
       const item = storeItems.find((i) => i.id === itemId);
       
       if (item) {
-        // Execute the RCON command
-        const command = item.command.replace("{player}", username);
-        const success = await executeRconCommand(command);
+        console.log(`[Stripe Webhook] Processing purchase: ${item.name} for ${username}`);
         
-        if (success) {
+        // Execute all RCON commands
+        let allSuccessful = true;
+        for (const cmdTemplate of item.commands) {
+          const command = cmdTemplate.replace("{player}", username);
+          const success = await executeRconCommand(command);
+          if (!success) allSuccessful = false;
+        }
+        
+        if (allSuccessful) {
           console.log(`Successfully granted ${item.name} to ${username}`);
+          
+          // Send Discord Notification if webhook is configured
+          const discordWebhook = process.env.DISCORD_WEBHOOK_URL;
+          if (discordWebhook) {
+            try {
+              await fetch(discordWebhook, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  embeds: [
+                    {
+                      title: "🛒 New Store Purchase!",
+                      description: `**${username}** has just purchased **${item.name}**!`,
+                      color: 0x22c55e, // Green
+                      fields: [
+                        { name: "Item", value: item.name, inline: true },
+                        { name: "Player", value: username, inline: true },
+                        { name: "Amount", value: `$${(item.price / 100).toFixed(2)}`, inline: true }
+                      ],
+                      timestamp: new Date().toISOString(),
+                    },
+                  ],
+                }),
+              });
+            } catch (err) {
+              console.error("Failed to send Discord notification:", err);
+            }
+          }
         } else {
-          console.error(`Failed to grant ${item.name} to ${username} via RCON`);
+          console.error(`Failed to grant some rewards for ${item.name} to ${username} via RCON`);
         }
       }
     }
