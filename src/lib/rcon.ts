@@ -1,30 +1,30 @@
-import { RCON } from "minecraft-server-util";
+import { Rcon } from "rcon-client";
 
 export async function executeRconCommand(command: string) {
-  const client = new RCON();
-  
   const host = process.env.RCON_HOST;
   const port = parseInt(process.env.RCON_PORT || "25575", 10);
   const password = process.env.RCON_PASSWORD;
 
   if (!host || !password) {
     console.error("RCON configuration missing!");
-    return false;
+    return null;
   }
 
   try {
-    await client.connect(host, port);
-    await client.login(password);
-    
+    const rcon = await Rcon.connect({
+      host,
+      port,
+      password,
+    });
+
     console.log(`[RCON] Executing command: ${command}`);
-    const response = await client.run(command);
+    const response = await rcon.send(command);
     console.log(`[RCON] Response: ${response}`);
     
-    await client.close();
+    await rcon.end();
     return response || "";
   } catch (error) {
     console.error(`[RCON] Failed to execute command:`, error);
-    try { client.close(); } catch (e) {}
     return null;
   }
 }
