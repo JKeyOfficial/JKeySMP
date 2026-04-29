@@ -8,17 +8,63 @@ import { cn } from "@/lib/utils";
 interface CheckoutModalProps {
   item: StoreItem | null;
   onClose: () => void;
+  initialPrice?: number;
 }
 
 import { useUser } from "@/context/UserContext";
-import { Monitor, Gamepad2 } from "lucide-react";
+import { Monitor, Gamepad2, Sparkles } from "lucide-react";
+import { useEffect } from "react";
 
-export default function CheckoutModal({ item, onClose }: CheckoutModalProps) {
+export default function CheckoutModal({ item, onClose, initialPrice }: CheckoutModalProps) {
   const { username: loggedInUser } = useUser();
   const [username, setUsername] = useState(loggedInUser?.startsWith('.') ? loggedInUser.substring(1) : (loggedInUser || ""));
   const [platform, setPlatform] = useState<"java" | "bedrock">(loggedInUser?.startsWith('.') ? "bedrock" : "java");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [dynamicPrice, setDynamicPrice] = useState<number>(initialPrice || item?.price || 0);
+  const [isCheckingDiscount, setIsCheckingDiscount] = useState(false);
+
+  // Auto-check for discounts when username changes
+  useEffect(() => {
+    if (!username.trim() || !item) return;
+
+    const checkDiscount = async () => {
+      setIsCheckingDiscount(true);
+      try {
+        let finalName = username.trim();
+        if (platform === "bedrock" && !finalName.startsWith(".")) {
+          finalName = "." + finalName;
+        }
+
+        const res = await fetch(`/api/user/info?username=${finalName}`);
+        const data = await res.json();
+        
+        if (data.groups) {
+          const { rankPriority } = await import("@/config/store");
+          const userLevel = Math.max(...data.groups.map((g: string) => rankPriority[g] || 0));
+          const targetLevel = rankPriority[item.id.replace("rank_", "")] || 0;
+
+          if (userLevel > 0 && userLevel < targetLevel) {
+            const currentRankKey = Object.keys(rankPriority).find(k => rankPriority[k] === userLevel);
+            const { storeItems } = await import("@/config/store");
+            const currentRankItem = storeItems.find(i => i.id === `rank_${currentRankKey}`);
+            if (currentRankItem) {
+              setDynamicPrice(Math.max(0, item.price - currentRankItem.price));
+            }
+          } else {
+            setDynamicPrice(item.price);
+          }
+        }
+      } catch (err) {
+        console.error("Discount check failed:", err);
+      } finally {
+        setIsCheckingDiscount(false);
+      }
+    };
+
+    const timer = setTimeout(checkDiscount, 500); // Debounce
+    return () => clearTimeout(timer);
+  }, [username, platform, item]);
 
   if (!item) return null;
 
@@ -59,6 +105,8 @@ export default function CheckoutModal({ item, onClose }: CheckoutModalProps) {
       setLoading(false);
     }
   };
+
+  const isUpgrade = dynamicPrice < item.price;
 
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
@@ -121,24 +169,42 @@ export default function CheckoutModal({ item, onClose }: CheckoutModalProps) {
               {platform === "bedrock" && (
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold text-lg pointer-events-none opacity-50">.</span>
               )}
+              {isCheckingDiscount && (
+                <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                </div>
+              )}
             </div>
             {error && <p className="text-sm text-red-400 font-medium">{error}</p>}
           </div>
 
           <div className="pt-4 border-t border-white/10">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-zinc-400">Total</span>
-              <span className="text-xl font-bold text-white">${(item.price / 100).toFixed(2)}</span>
+              <div className="flex flex-col">
+                <span className="text-zinc-400 text-sm">Total Due</span>
+                {isUpgrade && (
+                  <span className="text-[10px] text-green-400 font-bold uppercase flex items-center gap-1">
+                    <Sparkles className="w-2 h-2" />
+                    Rank Discount Applied
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col items-end">
+                {isUpgrade && (
+                  <span className="text-xs text-zinc-500 line-through">${(item.price / 100).toFixed(2)}</span>
+                )}
+                <span className="text-2xl font-black text-white">${(dynamicPrice / 100).toFixed(2)}</span>
+              </div>
             </div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || isCheckingDiscount}
               className={cn(
-                "w-full flex items-center justify-center py-3 px-4 rounded-lg font-medium text-white transition-all duration-300",
-                "bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(228,1,46,0.3)] hover:scale-105"
+                "w-full flex items-center justify-center py-4 px-4 rounded-xl font-bold text-white transition-all duration-300 uppercase tracking-widest text-sm",
+                "bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(228,1,46,0.3)] hover:scale-105"
               )}
             >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Proceed to Checkout"}
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : isUpgrade ? "Complete Upgrade" : "Complete Purchase"}
             </button>
           </div>
         </form>

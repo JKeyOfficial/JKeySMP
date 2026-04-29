@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { storeItems, StoreItem } from "@/config/store";
+import { storeItems, StoreItem, rankPriority } from "@/config/store";
 import { Check } from "lucide-react";
 import CheckoutModal from "@/components/CheckoutModal";
 import { useUser } from "@/context/UserContext";
@@ -10,13 +10,6 @@ export default function StorePage() {
   const [selectedItem, setSelectedItem] = useState<StoreItem | null>(null);
   const { username, groups } = useUser();
 
-  // Define rank hierarchy
-  const rankPriority: Record<string, number> = {
-    "default": 0,
-    "pro": 1,
-    "elite": 2,
-    "ultra": 3
-  };
 
   const currentRankLevel = Math.max(...groups.map(g => rankPriority[g] || 0));
 
@@ -38,6 +31,19 @@ export default function StorePage() {
             const isOwned = groups.includes(itemRankName);
             const isDowngrade = currentRankLevel > itemLevel;
 
+            // Calculate dynamic upgrade price
+            let displayPrice = item.price;
+            let isUpgrade = false;
+            
+            if (currentRankLevel > 0 && !isOwned && !isDowngrade) {
+              const currentRankKey = Object.keys(rankPriority).find(k => rankPriority[k] === currentRankLevel);
+              const currentRankItem = storeItems.find(i => i.id === `rank_${currentRankKey}`);
+              if (currentRankItem) {
+                displayPrice = Math.max(0, item.price - currentRankItem.price);
+                isUpgrade = true;
+              }
+            }
+
             return (
               <div 
                 key={item.id}
@@ -58,9 +64,14 @@ export default function StorePage() {
                   <p className="text-zinc-500 dark:text-zinc-400 min-h-[48px]">{item.description}</p>
                 </div>
 
-                <div className="mb-8">
-                  <span className="text-4xl font-black text-foreground">${(item.price / 100).toFixed(2)}</span>
+                <div className="mb-8 flex items-baseline gap-2">
+                  <span className="text-4xl font-black text-foreground">${(displayPrice / 100).toFixed(2)}</span>
                   <span className="text-zinc-500 dark:text-zinc-400"> / lifetime</span>
+                  {isUpgrade && (
+                    <span className="text-[10px] font-bold bg-green-500/10 text-green-500 px-2 py-1 rounded-full uppercase tracking-tight animate-pulse">
+                      Upgrade Discount
+                    </span>
+                  )}
                 </div>
 
                 <ul className="space-y-4 mb-8 flex-1">
@@ -83,7 +94,7 @@ export default function StorePage() {
                       : "bg-primary text-white hover:bg-primary/90 hover:scale-105 shadow-[0_0_15px_rgba(228,1,46,0.3)]"
                   }`}
                 >
-                  {isOwned ? "Already Owned" : isDowngrade ? "Higher Rank Owned" : `Purchase ${item.name}`}
+                  {isOwned ? "Already Owned" : isDowngrade ? "Higher Rank Owned" : isUpgrade ? `Upgrade for $${(displayPrice / 100).toFixed(2)}` : `Purchase ${item.name}`}
                 </button>
               </div>
             );
@@ -95,6 +106,16 @@ export default function StorePage() {
         <CheckoutModal 
           item={selectedItem} 
           onClose={() => setSelectedItem(null)} 
+          initialPrice={(() => {
+            const itemRankName = selectedItem.id.replace("rank_", "");
+            const itemLevel = rankPriority[itemRankName] || 0;
+            if (currentRankLevel > 0 && currentRankLevel < itemLevel) {
+              const currentRankKey = Object.keys(rankPriority).find(k => rankPriority[k] === currentRankLevel);
+              const currentRankItem = storeItems.find(i => i.id === `rank_${currentRankKey}`);
+              if (currentRankItem) return Math.max(0, selectedItem.price - currentRankItem.price);
+            }
+            return selectedItem.price;
+          })()}
         />
       )}
     </main>

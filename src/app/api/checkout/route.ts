@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { storeItems } from "@/config/store";
+import { storeItems, rankPriority } from "@/config/store";
+import { getUserGroups } from "@/lib/minecraft";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2026-04-22.dahlia" as any,
@@ -19,6 +20,27 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Item not found" }, { status: 404 });
     }
 
+    // Dynamic Upgrade Logic
+    const groups = await getUserGroups(username);
+    const currentRankLevel = Math.max(...groups.map(g => rankPriority[g] || 0));
+    const targetRankName = item.id.replace("rank_", "");
+    const targetRankLevel = rankPriority[targetRankName] || 0;
+
+    // Prevent downgrades or duplicate purchases at the API level
+    if (currentRankLevel >= targetRankLevel) {
+      return NextResponse.json({ error: "You already own this rank or a higher one" }, { status: 400 });
+    }
+
+    let finalPrice = item.price;
+    if (currentRankLevel > 0) {
+      const currentRankKey = Object.keys(rankPriority).find(k => rankPriority[k] === currentRankLevel);
+      const currentRankItem = storeItems.find(i => i.id === `rank_${currentRankKey}`);
+      if (currentRankItem) {
+        finalPrice = Math.max(0, item.price - currentRankItem.price);
+      }
+    }
+
+    const isUpgrade = finalPrice < item.price;
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
     const session = await stripe.checkout.sessions.create({
@@ -28,10 +50,10 @@ export async function POST(req: Request) {
           price_data: {
             currency: "usd",
             product_data: {
-              name: item.name,
-              description: item.description,
+              name: isUpgrade ? `Rank Upgrade: ${item.name}` : item.name,
+              description: isUpgrade ? `Upgrading from your current rank to ${item.name}` : item.description,
             },
-            unit_amount: item.price,
+            unit_amount: finalPrice,
           },
           quantity: 1,
         },
@@ -42,6 +64,7 @@ export async function POST(req: Request) {
       metadata: {
         minecraft_username: username,
         item_id: item.id,
+        is_upgrade: (finalPrice < item.price).toString()
       },
     });
 

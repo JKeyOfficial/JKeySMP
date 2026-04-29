@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { executeRconCommand } from "@/lib/rcon";
+import { getUserGroups } from "@/lib/minecraft";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -10,34 +10,8 @@ export async function GET(req: Request) {
   }
 
   try {
-    const lcName = username.toLowerCase();
-
-    // Velocity RCON must NOT have a leading slash
-    const response = await executeRconCommand(`lpv user ${lcName} parent info`);
-
-    if (typeof response !== "string" || !response || response === "1") {
-      // If we still get '1' or nothing, we try permission checks (no slashes)
-      const hasPro = await executeRconCommand(`lpv user ${lcName} permission check group.pro`) || "";
-      const hasElite = await executeRconCommand(`lpv user ${lcName} permission check group.elite`) || "";
-      const hasUltra = await executeRconCommand(`lpv user ${lcName} permission check group.ultra`) || "";
-
-      const groups = ["default"];
-      if (String(hasPro).toLowerCase().includes("true")) groups.push("pro");
-      if (String(hasElite).toLowerCase().includes("true")) groups.push("elite");
-      if (String(hasUltra).toLowerCase().includes("true")) groups.push("ultra");
-
-      return NextResponse.json({ groups });
-    }
-
-    // Parse the list response. LuckPerms list usually looks like: "- pro", "- default", etc.
-    const groups = ["default"];
-    const text = String(response).toLowerCase();
-
-    if (text.includes("pro")) groups.push("pro");
-    if (text.includes("elite")) groups.push("elite");
-    if (text.includes("ultra")) groups.push("ultra");
-
-    return NextResponse.json({ groups: Array.from(new Set(groups)) });
+    const groups = await getUserGroups(username);
+    return NextResponse.json({ groups });
   } catch (error) {
     console.error("Failed to fetch user groups:", error);
     return NextResponse.json({ error: "Failed to connect to server" }, { status: 500 });

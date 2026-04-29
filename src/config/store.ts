@@ -8,6 +8,13 @@ export interface StoreItem {
   commands: string[];
 }
 
+export const rankPriority: Record<string, number> = {
+  "default": 0,
+  "pro": 1,
+  "elite": 2,
+  "ultra": 3
+};
+
 export const storeItems: StoreItem[] = [
   {
     id: "rank_pro",
