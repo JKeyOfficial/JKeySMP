@@ -18,7 +18,13 @@ export function middleware(request: NextRequest) {
   // For local development
   const isLocal = hostname?.includes('localhost');
 
-  // 2. Handle Store Subdomain
+  // 2. EXEMPT STATIC ASSETS (Crucial for Images, Fonts, etc.)
+  const staticExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico', '.css', '.js', '.woff', '.woff2', '.ttf'];
+  if (staticExtensions.some(ext => url.pathname.toLowerCase().endsWith(ext))) {
+    return NextResponse.next();
+  }
+
+  // 3. Handle Store Subdomain
   if (hostname === storeDomain || (isLocal && url.searchParams.get('subdomain') === 'store')) {
     if (url.pathname.startsWith('/store')) {
       return NextResponse.redirect(new URL(url.pathname.replace('/store', ''), request.url));
@@ -26,7 +32,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(new URL(`/store${url.pathname}`, request.url));
   }
 
-  // 3. Handle Web Subdomain
+  // 4. Handle Web Subdomain
   if (hostname === webDomain || (isLocal && url.searchParams.get('subdomain') === 'web')) {
     if (url.pathname.startsWith('/web')) {
       return NextResponse.redirect(new URL(url.pathname.replace('/web', ''), request.url));
@@ -44,7 +50,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - images/assets in public folder
      */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|css|js|woff|woff2|ttf)).*)',
   ],
 };
