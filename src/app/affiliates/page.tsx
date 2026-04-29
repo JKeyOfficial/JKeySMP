@@ -17,7 +17,7 @@ export default function AffiliatesPage() {
     },
     {
       name: "HabiTick",
-      description: "Level up your daily routine. HabiTick is a powerful habit tracker that combines gamification with beautiful design to help you reach your goals faster.",
+      description: "Level up your daily routine. HabiTick is a powerful all-in-one habit tracker with streaks, a daily journal, and the promise of no ads, all paired with a beautiful user interface to help you reach your goals faster.",
       link: "https://habitick.pro",
       icon: <CheckCircle2 className="w-12 h-12 text-primary" />,
       tag: "Productivity Partner",

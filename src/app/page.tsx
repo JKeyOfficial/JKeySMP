@@ -29,7 +29,7 @@ export default function Home() {
             </p>
 
             <div className="flex flex-wrap items-center gap-6">
-              <button 
+              <button
                 onClick={() => setIsJoinModalOpen(true)}
                 className="inline-block px-8 py-3.5 bg-primary rounded-md text-white font-medium hover:bg-foreground hover:text-background hover:scale-105 cursor-pointer transition-all duration-300"
               >
@@ -77,7 +77,7 @@ export default function Home() {
             <div className="bg-card border border-border p-8 rounded-xl hover:-translate-y-2 hover:border-primary hover:shadow-[0_10px_20px_rgba(0,0,0,0.2)] transition-all duration-300">
               <Zap className="w-10 h-10 text-primary mb-6" />
               <h3 className="text-xl font-bold font-heading text-foreground mb-3">Lag Free</h3>
-              <p className="text-zinc-500 dark:text-zinc-400 leading-relaxed">Running on premium dedicated hardware optimized for the best possible TPS, ensuring a smooth survival experience.</p>
+              <p className="text-zinc-500 dark:text-zinc-400 leading-relaxed">Powered by Papernodes, our servers are optimized for the best possible TPS, ensuring a smooth survival experience.</p>
             </div>
 
             <div className="bg-card border border-border p-8 rounded-xl hover:-translate-y-2 hover:border-primary hover:shadow-[0_10px_20px_rgba(0,0,0,0.2)] transition-all duration-300">
