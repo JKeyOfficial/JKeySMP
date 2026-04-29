@@ -11,20 +11,22 @@ export async function POST(req: Request) {
   const body = await req.text();
   const sig = req.headers.get("stripe-signature");
 
+  console.log("[Stripe Webhook] Received POST request");
+  console.log("[Stripe Webhook] Signature present:", !!sig);
+
   if (!sig) {
+    console.error("[Stripe Webhook] Error: No signature in headers");
     return NextResponse.json({ error: "No signature" }, { status: 400 });
   }
 
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET || ""
-    );
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
+    event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
+    console.log(`[Stripe Webhook] Verified event: ${event.type} (${event.id})`);
   } catch (err: any) {
-    console.error(`Webhook signature verification failed: ${err.message}`);
+    console.error(`[Stripe Webhook] Signature verification failed: ${err.message}`);
     return NextResponse.json({ error: err.message }, { status: 400 });
   }
 
