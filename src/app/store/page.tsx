@@ -14,17 +14,17 @@ export default function StorePage() {
   const currentRankLevel = Math.max(...groups.map(g => rankPriority[g] || 0));
 
   return (
-    <main className="flex-1 flex flex-col pt-32 pb-16">
+    <main className="flex-1 flex flex-col pt-28 md:pt-32 pb-12 md:pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-black font-heading mb-4 text-foreground">Server Store</h1>
+        <div className="text-center mb-10 md:mb-16">
+          <h1 className="text-4xl md:text-5xl font-black font-heading mb-4 text-foreground">Server Store</h1>
           <div className="section-line mb-6"></div>
-          <p className="text-xl text-zinc-500 dark:text-zinc-300 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-zinc-500 dark:text-zinc-300 max-w-2xl mx-auto">
             Support the server and unlock exclusive perks. All purchases directly fund server hosting and development.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {storeItems.map((item) => {
             const itemRankName = item.id.replace("rank_", "");
             const itemLevel = rankPriority[itemRankName] || 0;
@@ -47,7 +47,7 @@ export default function StorePage() {
             return (
               <div 
                 key={item.id}
-                className={`flex flex-col bg-card border border-border rounded-xl p-8 relative overflow-hidden group transition-all duration-300 ${
+                className={`flex flex-col bg-card border border-border rounded-xl p-6 md:p-8 relative overflow-hidden group transition-all duration-300 ${
                   isOwned || isDowngrade ? "opacity-75" : "hover:-translate-y-2 hover:border-primary hover:shadow-[0_10px_20px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_10px_20px_rgba(0,0,0,0.4)]"
                 }`}
               >

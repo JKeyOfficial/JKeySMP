@@ -12,14 +12,16 @@ export default function Template({ children }: { children: React.ReactNode }) {
     const prevPath = sessionStorage.getItem("prevPath");
     const isHome = pathname === "/" || pathname.startsWith("/#");
     
-    if (prevPath === "/" && (pathname === "/store" || pathname === "/affiliates")) {
+    const subPages = ["/store", "/info", "/affiliates", "/privacy", "/terms"];
+    const prevIndex = subPages.indexOf(prevPath || "");
+    const currIndex = subPages.indexOf(pathname);
+
+    if (prevPath === "/" && subPages.includes(pathname)) {
       setDirection(1);
-    } else if ((prevPath === "/store" || prevPath === "/affiliates") && isHome) {
+    } else if (subPages.includes(prevPath || "") && isHome) {
       setDirection(-1);
-    } else if (prevPath === "/store" && pathname === "/affiliates") {
-      setDirection(1);
-    } else if (prevPath === "/affiliates" && pathname === "/store") {
-      setDirection(-1);
+    } else if (prevIndex !== -1 && currIndex !== -1) {
+      setDirection(currIndex > prevIndex ? 1 : -1);
     }
     sessionStorage.setItem("prevPath", pathname);
   }, [pathname]);

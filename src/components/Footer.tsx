@@ -14,7 +14,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="w-full bg-background border-t border-border py-12 relative z-20">
+    <footer className="w-full bg-background border-t border-border py-8 md:py-12 relative z-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           {/* Logo */}
@@ -37,13 +37,16 @@ export default function Footer() {
             <Link href="/store" className="text-sm font-medium text-zinc-500 hover:text-primary transition-colors">
               Store
             </Link>
+            <Link href="/info" className="text-sm font-medium text-zinc-500 hover:text-primary transition-colors">
+              Info
+            </Link>
             <Link href="/affiliates" className="text-sm font-medium text-zinc-500 hover:text-primary transition-colors">
               Affiliates
             </Link>
-            <Link href="#" className="text-sm font-medium text-zinc-500 hover:text-primary transition-colors">
+            <Link href="/privacy" className="text-sm font-medium text-zinc-500 hover:text-primary transition-colors">
               Privacy Policy
             </Link>
-            <Link href="#" className="text-sm font-medium text-zinc-500 hover:text-primary transition-colors">
+            <Link href="/terms" className="text-sm font-medium text-zinc-500 hover:text-primary transition-colors">
               Terms of Service
             </Link>
           </nav>

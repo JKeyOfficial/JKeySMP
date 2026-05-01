@@ -44,11 +44,11 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
           </button>
         </div>
 
-        <div className="p-10">
-          <h2 className="text-2xl font-bold text-center text-white mb-8">Enter your Minecraft Username</h2>
+        <div className="p-6 sm:p-10">
+          <h2 className="text-xl sm:text-2xl font-bold text-center text-white mb-6 sm:mb-8">Enter your Minecraft Username</h2>
 
           {/* Platform Toggle */}
-          <div className="flex gap-4 mb-8">
+          <div className="flex gap-3 sm:gap-4 mb-6 sm:mb-8">
             <button
               onClick={() => setPlatform("java")}
               className={`flex-1 flex items-center justify-center gap-3 py-4 rounded-2xl border-2 transition-all font-bold ${
@@ -73,14 +73,14 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex gap-2">
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={platform === "bedrock" ? "Username (without .)" : "Username"}
-                className="w-full h-16 px-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-lg font-medium"
+                className="w-full h-14 sm:h-16 px-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-lg font-medium"
                 required
                 autoFocus
               />
@@ -91,7 +91,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <button
               type="submit"
               disabled={isLoading}
-              className="h-16 px-8 bg-primary text-white font-bold rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center gap-2 whitespace-nowrap"
+              className="h-14 sm:h-16 px-8 bg-primary text-white font-bold rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
             >
               {isLoading ? "..." : "Continue"}
               <ChevronRight className="w-5 h-5" />

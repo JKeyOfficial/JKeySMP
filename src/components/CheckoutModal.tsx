@@ -110,17 +110,17 @@ export default function CheckoutModal({ item, onClose, initialPrice }: CheckoutM
 
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div className="relative w-full max-w-md p-8 bg-[#121212] border border-white/10 rounded-3xl shadow-2xl animate-in fade-in zoom-in duration-300">
+      <div className="relative w-full max-w-md p-6 sm:p-8 bg-[#121212] border border-white/10 rounded-2xl sm:rounded-3xl shadow-2xl animate-in fade-in zoom-in duration-300">
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 text-white/40 hover:text-white transition-colors"
+          className="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/40 hover:text-white transition-colors"
         >
           <X className="w-6 h-6" />
         </button>
         
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2 text-white">Purchase {item.name}</h2>
-          <p className="text-white/40">Choose your platform and enter your username.</p>
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-white">Purchase {item.name}</h2>
+          <p className="text-white/40 text-sm sm:text-base">Choose your platform and enter your username.</p>
         </div>
 
         <form onSubmit={handleCheckout} className="space-y-6">

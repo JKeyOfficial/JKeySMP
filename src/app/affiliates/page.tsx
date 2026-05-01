@@ -26,27 +26,27 @@ export default function AffiliatesPage() {
   ];
 
   return (
-    <div className="flex-1 bg-background py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="flex-1 bg-background py-28 md:py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full z-0 pointer-events-none"></div>
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full z-0 pointer-events-none"></div>
 
       <div className="max-w-5xl mx-auto relative z-10">
-        <div className="text-center mb-24">
-          <h1 className="text-5xl md:text-6xl font-black font-heading text-foreground mb-6 tracking-tight">
+        <div className="text-center mb-14 md:mb-24">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black font-heading text-foreground mb-6 tracking-tight">
             Our Affiliates
           </h1>
           <div className="section-line mx-auto mb-8"></div>
-          <p className="text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
             We are proud to collaborate with industry-leading partners who share our commitment to quality and community.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
           {affiliates.map((affiliate) => (
             <div
               key={affiliate.name}
-              className="group relative bg-card border border-border rounded-3xl p-10 hover:border-primary/50 hover:shadow-[0_30px_60px_rgba(0,0,0,0.25)] transition-all duration-500 flex flex-col items-center text-center"
+              className="group relative bg-card border border-border rounded-2xl md:rounded-3xl p-6 sm:p-8 md:p-10 hover:border-primary/50 hover:shadow-[0_30px_60px_rgba(0,0,0,0.25)] transition-all duration-500 flex flex-col items-center text-center"
             >
               {/* Card Hover Gradient */}
               <div className={`absolute inset-0 bg-gradient-to-br ${affiliate.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl`}></div>
@@ -63,7 +63,7 @@ export default function AffiliatesPage() {
                 {affiliate.name}
               </h2>
 
-              <p className="relative z-10 text-lg text-zinc-500 dark:text-zinc-400 leading-relaxed mb-12 flex-1">
+              <p className="relative z-10 text-base md:text-lg text-zinc-500 dark:text-zinc-400 leading-relaxed mb-8 md:mb-12 flex-1">
                 {affiliate.description}
               </p>
 
@@ -81,7 +81,7 @@ export default function AffiliatesPage() {
         </div>
 
         {/* Support Note */}
-        <div className="mt-24 text-center p-12 bg-card/50 border border-border rounded-3xl backdrop-blur-sm">
+        <div className="mt-14 md:mt-24 text-center p-8 md:p-12 bg-card/50 border border-border rounded-2xl md:rounded-3xl backdrop-blur-sm">
           <p className="text-zinc-500 dark:text-zinc-400 font-medium italic">
             "Supporting our affiliates helps sustain the JKey SMP community. We only partner with services we personally use and trust."
           </p>
