@@ -187,14 +187,6 @@ export default function Navbar() {
                   {copied ? "IP copied" : "IP: jkeysmp.net"}
                 </button>
 
-                {/* Theme Toggle */}
-                <button
-                  onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-                  className="ml-4 md:ml-6 text-foreground hover:text-primary hover:scale-110 cursor-pointer transition-all duration-300"
-                >
-                  {resolvedTheme === "dark" ? <Sun className="w-5 h-5 md:w-6 md:h-6" /> : <Moon className="w-5 h-5 md:w-6 md:h-6" />}
-                </button>
-
                 {/* Mobile Hamburger */}
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

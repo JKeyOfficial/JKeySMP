@@ -51,6 +51,7 @@ export default function LeaderboardPage() {
     const fetchLeaderboard = async () => {
       setLoading(true);
       setError(null);
+      setData([]);
       try {
         const res = await fetch(`/api/leaderboard?stat=${activeStat}&page=${page}`);
         const json = await res.json();
@@ -58,7 +59,12 @@ export default function LeaderboardPage() {
         if (json.error) {
           setError(json.error);
         } else {
-          setData(json.data || []);
+          // Pre-format values to prevent render-time flickering
+          const formattedData = (json.data || []).map((entry: any) => ({
+            ...entry,
+            displayValue: formatValue(activeStat, entry.value)
+          }));
+          setData(formattedData);
           setTotalPages(json.meta?.totalPages || 1);
         }
       } catch (err) {
@@ -76,6 +82,9 @@ export default function LeaderboardPage() {
     if (isNaN(num)) return value;
 
     if (statId === 'vault_eco_balance') {
+      if (num >= 1000000000) return `$${(num / 1000000000).toFixed(2)}B`;
+      if (num >= 1000000) return `$${(num / 1000000).toFixed(2)}M`;
+      if (num >= 1000) return `$${(num / 1000).toFixed(2)}k`;
       return `$${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
     if (statId === 'statistic_time_played') {
@@ -104,7 +113,8 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="w-full overflow-x-hidden">
+      <div className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center mb-12">
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
@@ -123,19 +133,19 @@ export default function LeaderboardPage() {
         </motion.p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
+      {/* Tabs - 2x2 Grid on Mobile, Flex on Desktop */}
+      <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-3 mb-8">
         {stats.map((stat) => (
           <button
             key={stat.id}
             onClick={() => { setActiveStat(stat.id as StatType); setPage(1); }}
-            className={`flex items-center space-x-2 px-6 py-3 rounded-full font-bold transition-all ${
+            className={`flex items-center justify-center space-x-2 px-4 py-3 rounded-xl sm:rounded-full font-bold transition-all text-sm sm:text-base ${
               activeStat === stat.id 
                 ? 'bg-white/10 text-white ring-2 ring-white/20 shadow-lg' 
                 : 'bg-black/20 text-gray-400 hover:bg-white/5 hover:text-white'
             }`}
           >
-            <stat.icon className={`w-5 h-5 ${stat.color}`} />
+            <stat.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${stat.color}`} />
             <span>{stat.label}</span>
           </button>
         ))}
@@ -164,12 +174,12 @@ export default function LeaderboardPage() {
                 display: none;
               }
             `}</style>
-            <table className="w-full text-left border-collapse min-w-[500px]">
+            <table className="w-full text-left border-collapse min-w-0 sm:min-w-[500px]">
               <thead>
-                <tr className="bg-white/5 text-gray-400 text-sm uppercase tracking-wider">
-                  <th className="p-4 font-semibold text-center w-24">Rank</th>
-                  <th className="p-4 font-semibold">Player</th>
-                  <th className="p-4 font-semibold text-right">Score</th>
+                <tr className="bg-white/5 text-gray-400 text-[10px] sm:text-sm uppercase tracking-wider">
+                  <th className="px-2 py-4 sm:p-4 font-semibold text-center w-12 sm:w-24">Rank</th>
+                  <th className="px-2 py-4 sm:p-4 font-semibold">Player</th>
+                  <th className="px-2 py-4 sm:p-4 font-semibold text-right">Score</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -178,7 +188,7 @@ export default function LeaderboardPage() {
                   const highestRank = getHighestRank(player.ranks);
                   const style = highestRank ? rankStyles[highestRank] : null;
                   const medalRankColor = page === 1 ? medalRankColors[rank] : '';
-
+ 
                   return (
                     <motion.tr 
                       initial={{ opacity: 0, x: -20 }}
@@ -187,32 +197,32 @@ export default function LeaderboardPage() {
                       key={`${player.name}-${rank}`}
                       className="hover:bg-white/5 transition-colors group"
                     >
-                      <td className={`p-4 text-center font-black text-2xl group-hover:scale-110 transition-transform ${medalRankColor || 'text-gray-500 group-hover:text-white'}`}>
+                      <td className={`px-2 py-4 sm:p-4 text-center font-black text-lg sm:text-2xl group-hover:scale-110 transition-transform ${medalRankColor || 'text-gray-500 group-hover:text-white'}`}>
                         #{rank}
                       </td>
-                      <td className="p-4">
-                        <div className="flex items-center space-x-4">
-                          <div className={`relative w-10 h-10 rounded-md overflow-hidden ${style?.glow || ''}`}>
+                      <td className="px-2 py-4 sm:p-4">
+                        <div className="flex items-center space-x-2 sm:space-x-4">
+                          <div className={`relative w-8 h-8 sm:w-10 sm:h-10 rounded-md overflow-hidden shrink-0 ${style?.glow || ''}`}>
                             <img 
                               src={`https://mc-heads.net/avatar/${player.name}/50`} 
                               alt={player.name}
                               className="w-full h-full object-cover"
                             />
                           </div>
-                          <div className="flex flex-col">
-                            <span className={`font-bold text-lg ${style?.text || 'text-white'}`}>
+                          <div className="flex flex-col min-w-0">
+                            <span className={`font-bold text-sm sm:text-lg truncate ${style?.text || 'text-white'}`}>
                               {player.name}
                             </span>
                             {style && (
-                              <span className="text-[10px] font-black tracking-tighter opacity-70">
+                              <span className="text-[8px] sm:text-[10px] font-black tracking-tighter opacity-70">
                                 {style.label}
                               </span>
                             )}
                           </div>
                         </div>
                       </td>
-                      <td className="p-4 text-right font-mono text-xl text-emerald-400 font-bold">
-                        {formatValue(activeStat, player.value)}
+                      <td className="px-2 py-4 sm:p-4 text-right font-mono text-base sm:text-xl text-emerald-400 font-bold whitespace-nowrap">
+                        {player.displayValue}
                       </td>
                     </motion.tr>
                   );
@@ -246,5 +256,6 @@ export default function LeaderboardPage() {
         )}
       </div>
     </div>
+  </div>
   );
 }
