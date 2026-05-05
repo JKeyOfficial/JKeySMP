@@ -10,6 +10,7 @@ type StatType = 'vault_eco_balance' | 'statistic_time_played' | 'statistic_playe
 interface LeaderboardEntry {
   name: string;
   value: string | number;
+  displayValue: string;
   ranks?: string[];
 }
 
