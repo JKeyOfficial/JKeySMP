@@ -1,44 +1,44 @@
-import { executeRconCommand } from "./rcon";
+import lp_db from "./luckperms_db";
 import { rankPriority } from "@/config/store";
 
 export async function getUserGroups(username: string): Promise<string[]> {
-  // SECURITY: Prevent RCON Injection
-  // Allow alphanumeric, underscores, dots, and SPACES (for Bedrock)
   const safeName = username.replace(/[^a-zA-Z0-9_. ]/g, "");
-  
   if (!safeName) return ["default"];
 
   try {
     const lcName = safeName.toLowerCase();
     
-    // Velocity commands often need /lpv
-    const response = await executeRconCommand(`lpv user ${lcName} parent info`);
-    
-    if (typeof response !== "string" || !response || response === "1") {
-      // If we still get '1' or nothing, we try permission checks (no slashes)
-      const hasPro = await executeRconCommand(`lpv user ${lcName} permission check group.pro`) || "";
-      const hasElite = await executeRconCommand(`lpv user ${lcName} permission check group.elite`) || "";
-      const hasUltra = await executeRconCommand(`lpv user ${lcName} permission check group.ultra`) || "";
+    // 1. Get the player's UUID from the luckperms_players table
+    const [userRows]: any = await lp_db.query(
+      'SELECT uuid FROM luckperms_players WHERE username = ? LIMIT 1',
+      [lcName]
+    );
 
-      const groups = ["default"];
-      if (String(hasPro).toLowerCase().includes("true")) groups.push("pro");
-      if (String(hasElite).toLowerCase().includes("true")) groups.push("elite");
-      if (String(hasUltra).toLowerCase().includes("true")) groups.push("ultra");
-      
-      return groups;
+    if (!userRows || userRows.length === 0) {
+      return ["default"];
     }
 
-    // Parse the list response
+    const uuid = userRows[0].uuid;
+
+    // 2. Get the player's groups from the luckperms_user_permissions table
+    const [permissionRows]: any = await lp_db.query(
+      'SELECT permission FROM luckperms_user_permissions WHERE uuid = ? AND permission LIKE "group.%"',
+      [uuid]
+    );
+
     const groups = ["default"];
-    const text = String(response).toLowerCase();
-    
-    if (text.includes("pro")) groups.push("pro");
-    if (text.includes("elite")) groups.push("elite");
-    if (text.includes("ultra")) groups.push("ultra");
+    if (permissionRows && permissionRows.length > 0) {
+      permissionRows.forEach((row: any) => {
+        const group = row.permission.replace('group.', '').toLowerCase();
+        if (["pro", "elite", "ultra"].includes(group)) {
+          groups.push(group);
+        }
+      });
+    }
 
     return Array.from(new Set(groups));
   } catch (error) {
-    console.error("Failed to fetch user groups helper:", error);
+    console.error("Failed to fetch user groups via SQL:", error);
     return ["default"];
   }
 }
