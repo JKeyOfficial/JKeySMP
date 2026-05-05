@@ -22,7 +22,7 @@ export async function GET(request: Request) {
   };
 
   try {
-    let rows: any[];
+    let rows: any;
     let total: number;
 
     if (stat === 'kd') {
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
       const killsTable = 'ajlb_statistic_player_kills';
       const deathsTable = 'ajlb_statistic_deaths';
       
-      [rows] = await db.query(
+      const [data]: any = await db.query(
         `SELECT 
           k.namecache AS name, 
           (CAST(k.value AS DECIMAL(10,2)) / NULLIF(CAST(d.value AS DECIMAL(10,2)), 0)) AS value 
@@ -41,6 +41,7 @@ export async function GET(request: Request) {
         LIMIT ? OFFSET ?`,
         [killsTable, deathsTable, limit, offset]
       );
+      rows = data;
 
       const [countResult]: any = await db.query(`SELECT COUNT(*) as total FROM ??`, [killsTable]);
       total = countResult[0].total;
@@ -50,10 +51,11 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Invalid stat requested' }, { status: 400 });
       }
 
-      [rows] = await db.query(
+      const [data]: any = await db.query(
         `SELECT ?? AS name, ?? AS value FROM ?? ORDER BY CAST(?? AS DECIMAL) DESC LIMIT ? OFFSET ?`,
         [config.nameCol, config.valCol, config.table, config.valCol, limit, offset]
       );
+      rows = data;
 
       const [countResult]: any = await db.query(`SELECT COUNT(*) as total FROM ??`, [config.table]);
       total = countResult[0].total;
@@ -116,15 +118,6 @@ export async function GET(request: Request) {
     });
   } catch (error: any) {
     console.error('Leaderboard DB Error:', error);
-    
-    // Log all tables to help identify LuckPerms table names
-    try {
-      const lp_db = (await import('@/lib/luckperms_db')).default;
-      const [tables]: any = await lp_db.query(`SHOW TABLES`);
-      console.log(`LuckPerms Available tables:`, tables.map((t: any) => Object.values(t)[0]));
-    } catch (showError) {
-      console.error('Failed to show LP tables:', showError);
-    }
 
     return NextResponse.json({
       data: [],
