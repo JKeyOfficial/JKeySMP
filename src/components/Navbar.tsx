@@ -92,9 +92,7 @@ export default function Navbar() {
     { name: "Home", href: "/" },
     { name: "Store", href: "/store" },
     { name: "Leaderboard", href: "/leaderboard" },
-    { name: "Features", href: "/#features" },
     { name: "Info", href: "/info" },
-    { name: "Affiliates", href: "/affiliates" }
   ];
 
   return (
