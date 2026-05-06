@@ -93,6 +93,17 @@ export async function GET(request: Request) {
             displayContent = noRankMatch[2];
           }
         }
+
+        // 3. Special handling for Server Status messages
+        if (content.includes("Server has started")) {
+          playerName = "Server_Up";
+          displayContent = "Server has started";
+          isSystem = true;
+        } else if (content.includes("Server has stopped")) {
+          playerName = "Server_Down";
+          displayContent = "Server has stopped";
+          isSystem = true;
+        }
       }
 
       return {

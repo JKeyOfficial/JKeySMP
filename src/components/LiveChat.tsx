@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { MessageSquare, Users, Clock, Wifi, Loader2 } from "lucide-react";
+import { MessageSquare, Users, Clock, Wifi, Loader2, Check, X } from "lucide-react";
 
 interface ChatMessage {
   id: string;
@@ -189,11 +189,17 @@ export default function LiveChat() {
           messages.map((msg) => (
             <div
               key={msg.id}
-              className={`flex items-start gap-4 transition-all duration-500 animate-in fade-in slide-in-from-bottom-2 ${
-                msg.isSystem && !msg.author ? "justify-center opacity-60" : ""
-              }`}
+              className="flex items-start gap-4 transition-all duration-500 animate-in fade-in slide-in-from-bottom-2"
             >
-              {(msg.author && msg.author !== "System") && (
+              {msg.author === "Server_Up" ? (
+                <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center text-green-500 border border-green-500/30 shrink-0 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+                  <Check className="w-6 h-6" />
+                </div>
+              ) : msg.author === "Server_Down" ? (
+                <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center text-red-500 border border-red-500/30 shrink-0 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                  <X className="w-6 h-6" />
+                </div>
+              ) : (msg.author && msg.author !== "System" && !msg.author.startsWith("Server_")) && (
                 <div className="relative shrink-0">
                   <img
                     src={getAvatar(msg.author)}
@@ -203,7 +209,7 @@ export default function LiveChat() {
                 </div>
               )}
               
-              <div className={`flex-1 min-w-0 ${msg.isSystem && !msg.author ? "max-w-md" : ""}`}>
+              <div className="flex-1 min-w-0">
                 {!msg.isSystem && (
                   <div className="flex items-center gap-2 mb-1.5">
                     {msg.rank && (
@@ -222,8 +228,12 @@ export default function LiveChat() {
                 
                 <div className={`
                   relative text-sm leading-relaxed p-3.5 rounded-2xl border transition-all duration-300
-                  ${msg.isSystem 
-                    ? "bg-zinc-800/30 border-zinc-700/30 text-zinc-400 italic text-center text-xs" 
+                  ${msg.author === "Server_Up"
+                    ? "bg-green-500/10 border-green-500/20 text-green-400 font-bold"
+                    : msg.author === "Server_Down"
+                    ? "bg-red-500/10 border-red-500/20 text-red-400 font-bold"
+                    : msg.isSystem 
+                    ? "bg-zinc-800/30 border-zinc-700/30 text-zinc-400 italic text-xs" 
                     : "bg-background/80 border-border/50 text-zinc-300 hover:border-primary/20 hover:bg-background shadow-sm rounded-tl-none"}
                 `}>
                   {msg.content}
