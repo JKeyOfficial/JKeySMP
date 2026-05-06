@@ -115,7 +115,7 @@ export default function LeaderboardPage() {
 
   return (
     <div className="w-full overflow-x-hidden">
-      <div className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
       <div className="text-center mb-12">
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
@@ -198,31 +198,31 @@ export default function LeaderboardPage() {
                       key={`${player.name}-${rank}`}
                       className="hover:bg-white/5 transition-colors group"
                     >
-                      <td className={`px-2 py-4 sm:p-4 text-center font-black text-lg sm:text-2xl group-hover:scale-110 transition-transform ${medalRankColor || 'text-gray-500 group-hover:text-white'}`}>
+                      <td className={`px-2 py-4 sm:p-6 text-center font-black text-lg sm:text-3xl group-hover:scale-110 transition-transform ${medalRankColor || 'text-gray-500 group-hover:text-white'}`}>
                         #{rank}
                       </td>
-                      <td className="px-2 py-4 sm:p-4">
-                        <div className="flex items-center space-x-2 sm:space-x-4">
-                          <div className={`relative w-8 h-8 sm:w-10 sm:h-10 rounded-md overflow-hidden shrink-0 ${style?.glow || ''}`}>
+                      <td className="px-2 py-4 sm:p-6">
+                        <div className="flex items-center space-x-2 sm:space-x-6">
+                          <div className={`relative w-8 h-8 sm:w-14 sm:h-14 rounded-xl overflow-hidden shrink-0 ${style?.glow || ''}`}>
                             <img 
-                              src={`https://mc-heads.net/avatar/${player.name}/50`} 
+                              src={`https://mc-heads.net/avatar/${player.name}/100`} 
                               alt={player.name}
                               className="w-full h-full object-cover"
                             />
                           </div>
                           <div className="flex flex-col min-w-0">
-                            <span className={`font-bold text-sm sm:text-lg truncate ${style?.text || 'text-white'}`}>
+                            <span className={`font-bold text-sm sm:text-xl truncate ${style?.text || 'text-white'}`}>
                               {player.name}
                             </span>
                             {style && (
-                              <span className="text-[8px] sm:text-[10px] font-black tracking-tighter opacity-70">
+                              <span className="text-[8px] sm:text-xs font-black tracking-tighter opacity-70">
                                 {style.label}
                               </span>
                             )}
                           </div>
                         </div>
                       </td>
-                      <td className="px-2 py-4 sm:p-4 text-right font-mono text-base sm:text-xl text-emerald-400 font-bold whitespace-nowrap">
+                      <td className="px-2 py-4 sm:p-6 text-right font-mono text-base sm:text-2xl text-emerald-400 font-bold whitespace-nowrap">
                         {player.displayValue}
                       </td>
                     </motion.tr>
