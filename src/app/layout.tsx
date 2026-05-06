@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SocialSidebar from "@/components/SocialSidebar";
+import { Analytics } from "@vercel/analytics/next";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { UserProvider } from "@/context/UserContext";
@@ -42,6 +43,7 @@ export default function RootLayout({
             <div className="relative flex-1 flex flex-col">
               <SocialSidebar />
               {children}
+              <Analytics />
             </div>
             <Footer />
           </UserProvider>
