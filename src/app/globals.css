@@ -52,3 +52,11 @@ body {
   background-color: var(--color-primary);
   margin: 0 auto;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

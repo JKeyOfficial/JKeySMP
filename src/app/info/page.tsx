@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { motion, useAnimationControls } from "framer-motion";
 import JoinModal from "@/components/JoinModal";
 import {
   BookOpen,
@@ -30,6 +31,7 @@ import {
   Anchor,
   Wind,
   WindIcon,
+  Clock,
 } from "lucide-react";
 
 /* ─── Data ──────────────────────────────────────────────────────────── */
@@ -537,48 +539,146 @@ export default function InfoPage() {
             </div>
 
             {/* Removed Items Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                {
-                  name: "Mace",
-                  description: "The Mace has been removed to maintain balanced PvP combat and prevent overpowered mechanics.",
-                  icon: <Hammer className="w-6 h-6" />,
-                  color: "from-orange-500/20 to-amber-500/20",
-                },
-                {
-                  name: "End Crystals",
-                  description: "End Crystals are disabled for PvP use to prevent instant-kill explosion in combat, as it ruins the pvp experience.",
-                  icon: <Zap className="w-6 h-6" />,
-                  color: "from-purple-500/20 to-pink-500/20",
-                },
-                {
-                  name: "Respawn Anchors",
-                  description: "Similar to end crystals, respawn anchors are restricted to prevent instant-kill explosions and improve the pvp experience.",
-                  icon: <Anchor className="w-6 h-6" />,
-                  color: "from-blue-500/20 to-indigo-500/20",
-                },
-                {
-                  name: "Elytra",
-                  description: "Elytra are disabled while in combat to prevent easy escapes and encourage fair and, grounded pvp engagement.",
-                  icon: <WindIcon className="w-6 h-6" />,
-                  color: "from-cyan-500/20 to-blue-500/20",
-                },
-              ].map((item) => (
-                <div key={item.name} className="group relative bg-card border border-border rounded-2xl p-6 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] transition-all duration-500">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                    {item.icon}
+            <div className="space-y-12">
+              {/* Banned & Restricted Section */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 rounded-lg bg-red-500/10 text-red-500">
+                    <Ban className="w-5 h-5" />
                   </div>
-                  <h3 className="text-xl font-bold font-heading text-foreground mb-3">{item.name}</h3>
-                  <div className="w-10 h-1 bg-red-500/50 rounded-full mb-4 group-hover:w-16 transition-all duration-300"></div>
-                  <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed">
-                    {item.description}
-                  </p>
-                  <div className="mt-6 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-red-500/70">
-                    <Ban className="w-3 h-3" />
-                    Currently Disabled
-                  </div>
+                  <h3 className="text-2xl font-bold font-heading text-foreground">Banned & Restricted</h3>
                 </div>
-              ))}
+                <div className="relative overflow-hidden no-scrollbar">
+                  {/* Reel Container */}
+                  <motion.div
+                    drag="x"
+                    dragConstraints={{ left: -1000, right: 0 }}
+                    className="flex items-stretch gap-6 pb-8 cursor-grab active:cursor-grabbing"
+                  >
+                    {[
+                      {
+                        name: "Mace",
+                        description: "The Mace has been removed to maintain balanced PvP combat and prevent overpowered mechanics.",
+                        imgSrc: "https://minecraft.wiki/images/Mace_JE1_BE1.png?90f67",
+                      },
+                      {
+                        name: "End Crystals",
+                        description: "End Crystals are disabled for PvP use to prevent instant-kill explosion in combat, as it ruins the pvp experience.",
+                        imgSrc: "/end-crystal.png",
+                      },
+                      {
+                        name: "Respawn Anchors",
+                        description: "Similar to end crystals, respawn anchors are restricted to prevent instant-kill explosions and improve the pvp experience.",
+                        imgSrc: "/respawn-anchor.png",
+                      },
+                      {
+                        name: "Spear",
+                        description: "Spear is disabled while in combat to prevent instant kills with Elytra in the air.",
+                        imgSrc: "/spear.png",
+                        badge: "Combat Restricted",
+                      },
+                      {
+                        name: "Riptide",
+                        description: "Riptide is disabled while in combat to prevent easy escapes and encourage fair and, grounded pvp engagement.",
+                        imgSrc: "/trident.png",
+                        badge: "Combat Restricted",
+                      },
+                      {
+                        name: "Elytra",
+                        description: "Elytra are disabled while in combat to prevent easy escapes and encourage fair and, grounded pvp engagement.",
+                        imgSrc: "https://minecraft.wiki/images/Elytra_JE2_BE2.png?e0a4a",
+                        badge: "Combat Restricted",
+                      }
+                    ].map((item: any, idx: number) => (
+                      <div key={idx} className="flex-none w-[300px] min-h-[400px] group relative bg-card border border-border rounded-2xl p-6 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] transition-all duration-500 flex flex-col select-none">
+                        {item.imgSrc ? (
+                          <div className="w-14 h-14 mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <img src={item.imgSrc} alt={item.name} className="w-12 h-12 object-contain drop-shadow-[0_0_10px_rgba(0,0,0,0.2)]" />
+                          </div>
+                        ) : (
+                          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center ${item.iconColor || 'text-primary'} mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                            {item.icon}
+                          </div>
+                        )}
+                        <h3 className="text-xl font-bold font-heading text-foreground mb-3">{item.name}</h3>
+                        <div className="w-10 h-1 bg-red-500/50 rounded-full mb-4 group-hover:w-16 transition-all duration-300"></div>
+                        <p className="flex-1 text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed mb-6">
+                          {item.description}
+                        </p>
+                        <div className={`mt-auto pt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest ${item.badgeColor || 'text-red-500/70'}`}>
+                          {item.badgeIcon || <Ban className="w-3 h-3" />}
+                          {item.badge || 'Currently Disabled'}
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Features Section */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-2xl font-bold font-heading text-foreground">Custom Features</h3>
+                </div>
+                <div className="relative overflow-hidden no-scrollbar">
+                  <motion.div
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    className="flex items-stretch gap-6 pb-8 cursor-grab active:cursor-grabbing"
+                  >
+                    {[
+                      {
+                        name: "Loot",
+                        description: "Loot for structures is now unique for each player, allowing players to loot the same structure with friends.",
+                        imgSrc: "/chest.png",
+                        badge: "Custom Feature",
+                        badgeIcon: <Sparkles className="w-3 h-3" />,
+                        badgeColor: "text-primary",
+                      },
+                      {
+                        name: "End Reset",
+                        description: "Every week, the main end island resets. Players fight for the dragon egg, which can be traded for rewards.",
+                        imgSrc: "/dragon-egg.png",
+                        badge: "Custom Feature",
+                        badgeIcon: <Sparkles className="w-3 h-3" />,
+                        badgeColor: "text-primary",
+                      },
+                      {
+                        name: "Global Villagers",
+                        description: "Villager trading has been overhauled with global stock and balanced prices to create a more dynamic and fair server economy.",
+                        imgSrc: "/villager.png",
+                        badge: "Custom Feature",
+                        badgeIcon: <Sparkles className="w-3 h-3" />,
+                        badgeColor: "text-primary",
+                      }
+                    ].map((item: any, idx: number) => (
+                      <div key={idx} className="flex-none w-[300px] min-h-[400px] group relative bg-card border border-border rounded-2xl p-6 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] transition-all duration-500 flex flex-col select-none">
+                        {item.imgSrc ? (
+                          <div className="w-14 h-14 mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <img src={item.imgSrc} alt={item.name} className="w-12 h-12 object-contain drop-shadow-[0_0_10px_rgba(0,0,0,0.2)]" />
+                          </div>
+                        ) : (
+                          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center ${item.iconColor || 'text-primary'} mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                            {item.icon}
+                          </div>
+                        )}
+                        <h3 className="text-xl font-bold font-heading text-foreground mb-3">{item.name}</h3>
+                        <div className="w-10 h-1 bg-primary/50 rounded-full mb-4 group-hover:w-16 transition-all duration-300"></div>
+                        <p className="flex-1 text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed mb-6">
+                          {item.description}
+                        </p>
+                        <div className={`mt-auto pt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest ${item.badgeColor || 'text-red-500/70'}`}>
+                          {item.badgeIcon || <Ban className="w-3 h-3" />}
+                          {item.badge || 'Currently Disabled'}
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                </div>
+              </div>
             </div>
 
             {/* Additional Info Note */}
