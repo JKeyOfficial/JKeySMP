@@ -90,6 +90,7 @@ export default function Navbar() {
 
   const navItems = [
     { name: "Home", href: "/" },
+    { name: "Live Chat", href: "/#live-chat" },
     { name: "Store", href: "/store" },
     { name: "Leaderboard", href: "/leaderboard" },
     { name: "Info", href: "/info" },

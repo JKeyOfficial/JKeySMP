@@ -23,6 +23,13 @@ import {
   Star,
   Compass,
   Package,
+  Ban,
+  AlertTriangle,
+  Hammer,
+  Zap,
+  Anchor,
+  Wind,
+  WindIcon,
 } from "lucide-react";
 
 /* ─── Data ──────────────────────────────────────────────────────────── */
@@ -333,7 +340,7 @@ function GuideStepCard({ guide }: { guide: GuideStep }) {
 /* ─── Page ──────────────────────────────────────────────────────────── */
 
 export default function InfoPage() {
-  const [activeTab, setActiveTab] = useState<"guide" | "commands">("guide");
+  const [activeTab, setActiveTab] = useState<"guide" | "commands" | "changes">("guide");
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
   return (
@@ -384,6 +391,17 @@ export default function InfoPage() {
             >
               <Terminal className="w-4 h-4" />
               Commands
+            </button>
+            <button
+              onClick={() => setActiveTab("changes")}
+              className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-sm font-bold transition-all duration-300 cursor-pointer ${activeTab === "changes"
+                ? "bg-primary text-white shadow-lg shadow-primary/30"
+                : "text-zinc-500 dark:text-zinc-400 hover:text-foreground hover:bg-background/50"
+                }`}
+            >
+              <Ban className="w-4 h-4" />
+              <span className="hidden sm:inline">Gameplay Changes</span>
+              <span className="sm:hidden">Changes</span>
             </button>
           </div>
         </div>
@@ -490,6 +508,87 @@ export default function InfoPage() {
                 </a>{" "}
                 to unlock additional features and commands.
               </p>
+            </div>
+          </div>
+
+          {/* Gameplay Changes Tab */}
+          <div
+            className={`transition-all duration-500 ${activeTab === "changes"
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-4 absolute inset-0 pointer-events-none"
+              }`}
+          >
+            {/* Header */}
+            <div className="mb-8 md:mb-12 p-6 md:p-8 rounded-2xl md:rounded-3xl bg-gradient-to-r from-red-500/10 via-card to-red-500/5 border border-red-500/20 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-red-500/10 blur-[80px] rounded-full"></div>
+              <div className="relative z-10 flex items-start gap-4 md:gap-5">
+                <div className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-red-500/20 text-red-500 shrink-0">
+                  <AlertTriangle className="w-6 h-6 md:w-8 md:h-8" />
+                </div>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-black font-heading text-foreground mb-2">
+                    Gameplay Changes
+                  </h2>
+                  <p className="text-sm md:text-base text-zinc-500 dark:text-zinc-300 leading-relaxed max-w-xl">
+                    To ensure a fair and balanced experience for all players, we have made some adjustments to the vanilla gameplay. These items are currently disabled or removed.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Removed Items Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  name: "Mace",
+                  description: "The Mace has been removed to maintain balanced PvP combat and prevent overpowered mechanics.",
+                  icon: <Hammer className="w-6 h-6" />,
+                  color: "from-orange-500/20 to-amber-500/20",
+                },
+                {
+                  name: "End Crystals",
+                  description: "End Crystals are disabled for PvP use to prevent instant-kill explosion in combat, as it ruins the pvp experience.",
+                  icon: <Zap className="w-6 h-6" />,
+                  color: "from-purple-500/20 to-pink-500/20",
+                },
+                {
+                  name: "Respawn Anchors",
+                  description: "Similar to end crystals, respawn anchors are restricted to prevent instant-kill explosions and improve the pvp experience.",
+                  icon: <Anchor className="w-6 h-6" />,
+                  color: "from-blue-500/20 to-indigo-500/20",
+                },
+                {
+                  name: "Elytra",
+                  description: "Elytra are disabled while in combat to prevent easy escapes and encourage fair and, grounded pvp engagement.",
+                  icon: <WindIcon className="w-6 h-6" />,
+                  color: "from-cyan-500/20 to-blue-500/20",
+                },
+              ].map((item) => (
+                <div key={item.name} className="group relative bg-card border border-border rounded-2xl p-6 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] transition-all duration-500">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-bold font-heading text-foreground mb-3">{item.name}</h3>
+                  <div className="w-10 h-1 bg-red-500/50 rounded-full mb-4 group-hover:w-16 transition-all duration-300"></div>
+                  <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed">
+                    {item.description}
+                  </p>
+                  <div className="mt-6 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-red-500/70">
+                    <Ban className="w-3 h-3" />
+                    Currently Disabled
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Additional Info Note */}
+            <div className="mt-8 md:mt-12 p-6 rounded-2xl bg-card/50 border border-border backdrop-blur-sm">
+              <div className="flex items-center gap-3 text-zinc-500 dark:text-zinc-400">
+                <AlertTriangle className="w-5 h-5 text-primary" />
+                <p className="text-sm">
+                  These changes are subject to community feedback and may be adjusted in future seasons. Join our <a href="https://discord.com/invite/sgpBTVPqnu" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-bold">Discord</a> to participate in balancing discussions.
+                </p>
+              </div>
             </div>
           </div>
         </div>

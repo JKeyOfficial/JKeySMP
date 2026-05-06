@@ -27,7 +27,7 @@ export const storeItems: StoreItem[] = [
       "Exclusive Discord Role",
       "Leaderboard glow"
     ],
-    color: "from-zinc-300 to-zinc-500", // Silver
+    color: "from-amber-400 to-yellow-600", // Gold
     commands: ["lpv user \"{player}\" parent add pro"]
   },
   {
@@ -40,9 +40,8 @@ export const storeItems: StoreItem[] = [
       "Set up to 7 homes",
       "Exclusive Discord Role",
       "Leaderboard glow",
-
     ],
-    color: "from-amber-300 to-amber-500", // Gold
+    color: "from-cyan-400 to-blue-400", // Minecraft Diamond
     commands: ["lpv user \"{player}\" parent add elite"]
   },
   {
@@ -58,7 +57,7 @@ export const storeItems: StoreItem[] = [
       "Custom nicknames",
       "HabiTick lifetime premium"
     ],
-    color: "from-cyan-400 to-blue-500", // Blue Diamond
+    color: "from-pink-500 to-fuchsia-600", // Premium Magenta
     commands: ["lpv user \"{player}\" parent add ultra"]
   }
 ];

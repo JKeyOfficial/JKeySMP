@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import ServerStatus from "@/components/ServerStatus";
 import { ArrowRight, Shield, Zap, Gem } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import ExploreButton from "@/components/ExploreButton";
 import JoinModal from "@/components/JoinModal";
+import LiveChat from "@/components/LiveChat";
 
 export default function Home() {
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
@@ -52,12 +52,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Server Status Section */}
-      <section className="py-12 bg-card border-y border-border relative z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
-          <ServerStatus />
-        </div>
-      </section>
 
       {/* Features Section */}
       <section id="features" className="py-16 md:py-24 bg-background relative z-20 scroll-mt-20">
@@ -89,8 +83,24 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Live Chat Section */}
+      <section id="live-chat" className="py-16 md:py-24 bg-card border-y border-border relative z-20 scroll-mt-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4 text-foreground uppercase tracking-tight">Real-Time <span className="text-primary">Chat Feed</span></h2>
+            <div className="section-line"></div>
+            <p className="mt-4 text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto">
+              Stay connected with the community. See what's happening on the server right now, straight from your browser.
+            </p>
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <LiveChat />
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
-      <section className="py-16 md:py-24 border-t border-border relative overflow-hidden bg-card">
+      <section className="py-16 md:py-24 relative overflow-hidden bg-background">
         <div className="absolute inset-0 bg-primary/5"></div>
         <div className="max-w-4xl mx-auto px-6 md:px-4 text-center relative z-10">
           <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4 text-foreground">Support the Server</h2>

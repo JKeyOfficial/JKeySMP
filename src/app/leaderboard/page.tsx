@@ -23,9 +23,9 @@ export default function LeaderboardPage() {
   const [totalPages, setTotalPages] = useState(1);
 
   const rankStyles: Record<string, { text: string, glow: string, label: string }> = {
-    'ultra': { text: 'bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]', glow: 'shadow-[0_0_15px_rgba(34,211,238,0.3)]', label: 'ULTRA' },
-    'elite': { text: 'bg-gradient-to-r from-amber-300 to-amber-500 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]', glow: 'shadow-[0_0_15px_rgba(245,158,11,0.3)]', label: 'ELITE' },
-    'pro': { text: 'bg-gradient-to-r from-zinc-300 to-zinc-500 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(161,161,170,0.5)]', glow: 'shadow-[0_0_15px_rgba(161,161,170,0.3)]', label: 'PRO' },
+    'ultra': { text: 'bg-gradient-to-r from-pink-500 to-fuchsia-600 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(217,70,239,0.5)]', glow: 'shadow-[0_0_15px_rgba(217,70,239,0.3)]', label: 'ULTRA' },
+    'elite': { text: 'bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]', glow: 'shadow-[0_0_15px_rgba(34,211,238,0.3)]', label: 'ELITE' },
+    'pro': { text: 'bg-gradient-to-r from-amber-400 to-yellow-600 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]', glow: 'shadow-[0_0_15px_rgba(251,191,36,0.3)]', label: 'PRO' },
   };
 
   const getHighestRank = (ranks: string[] = []) => {
@@ -205,7 +205,7 @@ export default function LeaderboardPage() {
                         <div className="flex items-center space-x-2 sm:space-x-6">
                           <div className={`relative w-8 h-8 sm:w-14 sm:h-14 rounded-xl overflow-hidden shrink-0 ${style?.glow || ''}`}>
                             <img 
-                              src={`https://mc-heads.net/avatar/${player.name}/100`} 
+                              src={player.name.startsWith('.') ? 'https://mc-heads.net/avatar/steve/100' : `https://mc-heads.net/avatar/${player.name}/100`} 
                               alt={player.name}
                               className="w-full h-full object-cover"
                             />
