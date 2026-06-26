@@ -1,5 +1,72 @@
-This is the site and online store I made for my Minecraft server. I wanted to move away from traditional Minecraft store providers such as Tebex, as they have very limited design choices, look generic, and charge fees and monthly plans for use. So, using Google Antigravity, Vercel, and some initiative, I made this! Below are some of the features:
+# JKey SMP — Custom Minecraft Server Website & Store
 
-1) A fully responsive UI. This took many prompts, going back and forth, telling it which elements, divs, and images were too large, etc. However, I'm very happy with how it turned out.
-2) A login system - users can log in to their Minecraft accounts by entering their usernames. The system requires no password, and is how purchases are designated to accounts. My idea was to have a profile picture show too, to ensure users had confirmation that it was their account, as they would recognise their skin.
-3) The store shows all 3 packages available to purchase to the user, but greens out the ones already owned to prevent duplicate purchases of already owned items. I did this by linking the site to my Luckperms SQL table and then parsing the table for the username and their ranks. Any ranks found in the table correspond to a package on the store, and the site, as a result, shows them as "already owned."
+## Overview
+
+This is the custom website and online store I built for my Minecraft server, [JKey SMP](https://jkeysmp.net). 
+
+I wanted to move away from traditional Minecraft store providers like **Tebex** due to their limited design flexibility, generic templates, and ongoing fees. Instead, I built a fully custom solution using **Google Antigravity** and **Vercel**, giving me complete control over the design, user experience, and feature set.
+
+---
+
+## Features
+
+### 1. Fully Responsive UI
+A clean, modern interface that works across all devices. This involved extensive iteration — refining layouts, adjusting element sizing, and ensuring visual consistency across screen sizes.
+
+<img width="382" height="824" alt="image" src="https://github.com/user-attachments/assets/9af83349-3a5b-4fb8-b5bb-1368c2ab006e" />
+
+---
+
+### 2. Username-Based Login System
+Players log in by entering their Minecraft username — no password required. On login, their Minecraft skin renders as a profile picture, giving immediate visual confirmation that they're on the correct account.
+
+---
+
+### 3. Smart Store with Duplicate Purchase Prevention
+The store displays three rank tiers (Pro, Elite, Ultra), but automatically **greys out and marks as "Already Owned"** any ranks the player already has.
+
+**How it works:** The site queries my **LuckPerms MySQL database**, parses the user's group memberships, and cross-references them against store packages. This prevents accidental duplicate purchases and keeps the UI clean.
+
+&lt;img width="800" alt="Store showing owned ranks" src="https://github.com/user-attachments/assets/850ec735-38c8-4f0f-860e-218643077a00" /&gt;
+
+---
+
+### 4. Real-Time Live Chat Bridge
+A web-based chat interface synced directly with the Minecraft server via **RCON**, allowing players to communicate in-game from their browser.
+
+---
+
+### 5. Dynamic Leaderboards
+Live leaderboards tracking player stats including:
+- Wealth
+- Kills
+- K/D Ratio
+- Playtime
+
+---
+
+### 6. Server Status Monitoring
+Real-time server health indicator showing uptime and ping latency.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | Google Antigravity |
+| Hosting | Vercel |
+| Database | MySQL (LuckPerms) |
+| Server Integration | RCON |
+| Payments | Stripe |
+
+---
+
+## What I Learned
+
+- Architecting multi-service integrations (web ↔ database ↔ game server)
+- The importance of responsive design iteration
+- Database querying and parsing for dynamic UI states
+- Deploying and maintaining a live production site
+
+---
